@@ -1,0 +1,38 @@
+# Dependencias
+node_modules/
+classtryp3/node_modules/
+
+# Variables de entorno (NUNCA subir las keys)
+.env
+.env.local
+.env*.local
+classtryp3/.env
+
+# Expo
+.expo/
+classtryp3/.expo/
+classtryp3/dist/
+classtryp3/web-build/
+classtryp3/expo-env.d.ts
+
+# Native builds
+classtryp3/ios/
+classtryp3/android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# TypeScript
+*.tsbuildinfo
