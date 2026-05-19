@@ -1,41 +1,36 @@
 import { useState } from 'react';
 import {
-  Animated, Dimensions, ScrollView, StyleSheet,
+  Dimensions, ScrollView, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
 const { width } = Dimensions.get('window');
 
-// ─── Constantes ───────────────────────────────────────────────
 const GROUP_TYPES = [
-  { value: 'friends',   label: 'Amigos / Bachelor', icon: 'people',       desc: 'La mejor rumbita' },
-  { value: 'family',    label: 'Familia',            icon: 'home',         desc: 'Todos juntos' },
-  { value: 'couple',    label: 'Pareja',             icon: 'heart',        desc: 'Momento especial' },
-  { value: 'corporate', label: 'Corporativo',        icon: 'briefcase',    desc: 'Equipo de trabajo' },
+  { value: 'friends',   icon: 'people',    labelKey: 'friends',   descKey: 'friends_desc' },
+  { value: 'family',    icon: 'home',      labelKey: 'family',    descKey: 'family_desc' },
+  { value: 'couple',    icon: 'heart',     labelKey: 'couple',    descKey: 'couple_desc' },
+  { value: 'corporate', icon: 'briefcase', labelKey: 'corporate', descKey: 'corporate_desc' },
 ];
 
-const BUDGET_RANGES = [
-  { value: 'low',     label: 'Hasta $2M COP',      sub: '~$500 USD',   color: '#10B981' },
-  { value: 'mid',     label: '$2M – $5M COP',      sub: '~$500-1.2K USD', color: '#3B82F6' },
-  { value: 'premium', label: '$5M – $10M COP',     sub: '~$1.2-2.5K USD', color: '#F59E0B' },
-  { value: 'luxury',  label: '$10M – $20M COP',    sub: '~$2.5-5K USD', color: '#C9A84C' },
-  { value: 'ultra',   label: 'Más de $20M COP',    sub: '+$5K USD',     color: '#EF4444' },
-];
+const BUDGET_COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#C9A84C', '#EF4444'];
+const BUDGET_VALUES = ['low', 'mid', 'premium', 'luxury', 'ultra'];
 
 const PREFERENCES = [
-  { value: 'beach',      label: 'Playa',          icon: 'sunny-outline' },
-  { value: 'boat',       label: 'Paseo en bote',  icon: 'boat-outline' },
-  { value: 'party',      label: 'Fiesta / Rumba', icon: 'musical-notes-outline' },
-  { value: 'snorkel',    label: 'Snorkel',        icon: 'fish-outline' },
-  { value: 'gastronomy', label: 'Gastronomía',    icon: 'restaurant-outline' },
-  { value: 'photo',      label: 'Sesión de fotos',icon: 'camera-outline' },
-  { value: 'spa',        label: 'Spa / Relax',    icon: 'leaf-outline' },
-  { value: 'city',       label: 'City tour',      icon: 'map-outline' },
-  { value: 'dj',         label: 'DJ / Música',    icon: 'headset-outline' },
-  { value: 'chef',       label: 'Chef privado',   icon: 'pizza-outline' },
+  { value: 'beach',      icon: 'sunny-outline' },
+  { value: 'boat',       icon: 'boat-outline' },
+  { value: 'party',      icon: 'musical-notes-outline' },
+  { value: 'snorkel',    icon: 'fish-outline' },
+  { value: 'gastronomy', icon: 'restaurant-outline' },
+  { value: 'photo',      icon: 'camera-outline' },
+  { value: 'spa',        icon: 'leaf-outline' },
+  { value: 'city',       icon: 'map-outline' },
+  { value: 'dj',         icon: 'headset-outline' },
+  { value: 'chef',       icon: 'pizza-outline' },
 ];
 
 const TOTAL_STEPS = 5;
@@ -137,8 +132,7 @@ function CalendarPicker({ checkIn, checkOut, onSelectDate }) {
                 inRange && calStyles.dayInRange,
                 selected && calStyles.daySelected,
               ]}>{day}</Text>
-              {isCheckIn(day) && <Text style={calStyles.dayLabel}>Entrada</Text>}
-              {isCheckOut(day) && <Text style={calStyles.dayLabel}>Salida</Text>}
+              {(isCheckIn(day) || isCheckOut(day)) && <View style={calStyles.selectedDot} />}
             </TouchableOpacity>
           );
         })}
@@ -162,11 +156,12 @@ const calStyles = StyleSheet.create({
   dayPast: { color: '#D1D5DB' },
   dayInRange: { color: colors.primary },
   daySelected: { color: colors.primary, fontWeight: '700' },
-  dayLabel: { fontSize: 7, color: colors.primary, fontWeight: '700', position: 'absolute', bottom: 2 },
+  selectedDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: colors.primary, marginTop: 2 },
 });
 
 // ─── Wizard Principal ──────────────────────────────────────────
 export default function WizardScreen({ navigation }) {
+  const { t } = useLanguage();
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
     groupType: null,
@@ -224,10 +219,10 @@ export default function WizardScreen({ navigation }) {
           <View style={styles.progressTrack}>
             <View style={[styles.progressFill, { width: `${progress}%` }]} />
           </View>
-          <Text style={styles.stepLabel}>{step + 1} de {TOTAL_STEPS}</Text>
+          <Text style={styles.stepLabel}>{step + 1} {t('wizard.step_of')} {TOTAL_STEPS}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.cancelText}>Cancelar</Text>
+          <Text style={styles.cancelText}>{t('wizard.cancel')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -236,8 +231,8 @@ export default function WizardScreen({ navigation }) {
         {/* ── Paso 1: Tipo de grupo ── */}
         {step === 0 && (
           <View style={styles.stepContent}>
-            <Text style={styles.stepTitle}>¿Qué tipo de grupo son?</Text>
-            <Text style={styles.stepSubtitle}>Personalizamos el paquete según tu grupo</Text>
+            <Text style={styles.stepTitle}>{t('wizard.step1_title')}</Text>
+            <Text style={styles.stepSubtitle}>{t('wizard.step1_sub')}</Text>
             <View style={styles.groupGrid}>
               {GROUP_TYPES.map(opt => {
                 const active = data.groupType === opt.value;
@@ -249,8 +244,8 @@ export default function WizardScreen({ navigation }) {
                   >
                     <Ionicons name={active ? opt.icon : `${opt.icon}-outline`} size={32}
                       color={active ? colors.secondary : colors.textSecondary} />
-                    <Text style={[styles.groupLabel, active && styles.groupLabelActive]}>{opt.label}</Text>
-                    <Text style={[styles.groupDesc, active && styles.groupDescActive]}>{opt.desc}</Text>
+                    <Text style={[styles.groupLabel, active && styles.groupLabelActive]}>{t(`wizard.${opt.labelKey}`)}</Text>
+                    <Text style={[styles.groupDesc, active && styles.groupDescActive]}>{t(`wizard.${opt.descKey}`)}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -261,20 +256,20 @@ export default function WizardScreen({ navigation }) {
         {/* ── Paso 2: Fechas ── */}
         {step === 1 && (
           <View style={styles.stepContent}>
-            <Text style={styles.stepTitle}>¿Cuándo viajan?</Text>
-            <Text style={styles.stepSubtitle}>Seleccioná entrada y salida</Text>
+            <Text style={styles.stepTitle}>{t('wizard.step2_title')}</Text>
+            <Text style={styles.stepSubtitle}>{t('wizard.step2_sub')}</Text>
 
             {(data.checkIn || data.checkOut) && (
               <View style={styles.dateDisplay}>
                 <View style={styles.dateBox}>
-                  <Text style={styles.dateBoxLabel}>Entrada</Text>
+                  <Text style={styles.dateBoxLabel}>{t('wizard.check_in')}</Text>
                   <Text style={styles.dateBoxValue}>
                     {data.checkIn ? formatDate(data.checkIn) : '—'}
                   </Text>
                 </View>
                 <Ionicons name="arrow-forward" size={18} color={colors.textSecondary} />
                 <View style={styles.dateBox}>
-                  <Text style={styles.dateBoxLabel}>Salida</Text>
+                  <Text style={styles.dateBoxLabel}>{t('wizard.check_out')}</Text>
                   <Text style={styles.dateBoxValue}>
                     {data.checkOut ? formatDate(data.checkOut) : '—'}
                   </Text>
@@ -292,7 +287,7 @@ export default function WizardScreen({ navigation }) {
               <View style={styles.nightsChip}>
                 <Ionicons name="moon-outline" size={14} color={colors.secondary} />
                 <Text style={styles.nightsText}>
-                  {Math.ceil((data.checkOut - data.checkIn) / (1000 * 60 * 60 * 24))} noches
+                  {(() => { const n = Math.ceil((data.checkOut - data.checkIn) / (1000 * 60 * 60 * 24)); return `${n} ${n === 1 ? t('wizard.night_single') : t('wizard.nights')}`; })()}
                 </Text>
               </View>
             )}
@@ -302,13 +297,13 @@ export default function WizardScreen({ navigation }) {
         {/* ── Paso 3: Personas ── */}
         {step === 2 && (
           <View style={styles.stepContent}>
-            <Text style={styles.stepTitle}>¿Cuántos van?</Text>
-            <Text style={styles.stepSubtitle}>Para encontrar el alojamiento ideal</Text>
+            <Text style={styles.stepTitle}>{t('wizard.step3_title')}</Text>
+            <Text style={styles.stepSubtitle}>{t('wizard.step3_sub')}</Text>
 
             <View style={styles.countersCard}>
               {[
-                { key: 'adults',   label: 'Adultos',  sub: '13 años o más',  min: 1 },
-                { key: 'children', label: 'Niños',    sub: 'Menores de 13',  min: 0 },
+                { key: 'adults',   label: t('wizard.adults'),   sub: t('wizard.adults_sub'),   min: 1 },
+                { key: 'children', label: t('wizard.children'), sub: t('wizard.children_sub'), min: 0 },
               ].map(({ key, label, sub, min }) => (
                 <View key={key} style={styles.counterRow}>
                   <View>
@@ -337,7 +332,7 @@ export default function WizardScreen({ navigation }) {
             <View style={styles.totalPax}>
               <Ionicons name="people-outline" size={18} color={colors.secondary} />
               <Text style={styles.totalPaxText}>
-                {data.adults + data.children} personas en total
+                {data.adults + data.children} {t('wizard.total_people')}
               </Text>
             </View>
           </View>
@@ -346,25 +341,28 @@ export default function WizardScreen({ navigation }) {
         {/* ── Paso 4: Presupuesto ── */}
         {step === 3 && (
           <View style={styles.stepContent}>
-            <Text style={styles.stepTitle}>¿Cuál es tu presupuesto?</Text>
-            <Text style={styles.stepSubtitle}>Para todo el grupo, todo incluido</Text>
+            <Text style={styles.stepTitle}>{t('wizard.step4_title')}</Text>
+            <Text style={styles.stepSubtitle}>{t('wizard.step4_sub')}</Text>
             <View style={styles.budgetList}>
-              {BUDGET_RANGES.map(opt => {
-                const active = data.budget === opt.value;
+              {BUDGET_VALUES.map((val, i) => {
+                const active = data.budget === val;
+                const color = BUDGET_COLORS[i];
+                const ranges = t('wizard.budget_ranges');
+                const range = Array.isArray(ranges) ? ranges[i] : { label: val, sub: '' };
                 return (
                   <TouchableOpacity
-                    key={opt.value}
-                    style={[styles.budgetCard, active && { borderColor: opt.color, backgroundColor: opt.color + '10' }]}
-                    onPress={() => update('budget', opt.value)}
+                    key={val}
+                    style={[styles.budgetCard, active && { borderColor: color, backgroundColor: color + '10' }]}
+                    onPress={() => update('budget', val)}
                   >
-                    <View style={[styles.budgetDot, { backgroundColor: opt.color }]} />
+                    <View style={[styles.budgetDot, { backgroundColor: color }]} />
                     <View style={styles.budgetText}>
                       <Text style={[styles.budgetLabel, active && { color: colors.textPrimary, fontWeight: '700' }]}>
-                        {opt.label}
+                        {range.label}
                       </Text>
-                      <Text style={styles.budgetSub}>{opt.sub}</Text>
+                      <Text style={styles.budgetSub}>{range.sub}</Text>
                     </View>
-                    {active && <Ionicons name="checkmark-circle" size={22} color={opt.color} />}
+                    {active && <Ionicons name="checkmark-circle" size={22} color={color} />}
                   </TouchableOpacity>
                 );
               })}
@@ -375,8 +373,8 @@ export default function WizardScreen({ navigation }) {
         {/* ── Paso 5: Preferencias ── */}
         {step === 4 && (
           <View style={styles.stepContent}>
-            <Text style={styles.stepTitle}>¿Qué no puede faltar?</Text>
-            <Text style={styles.stepSubtitle}>Seleccioná todo lo que quieran incluir</Text>
+            <Text style={styles.stepTitle}>{t('wizard.step5_title')}</Text>
+            <Text style={styles.stepSubtitle}>{t('wizard.step5_sub')}</Text>
             <View style={styles.prefsGrid}>
               {PREFERENCES.map(pref => {
                 const active = data.preferences.includes(pref.value);
@@ -392,7 +390,7 @@ export default function WizardScreen({ navigation }) {
                       color={active ? colors.secondary : colors.textSecondary}
                     />
                     <Text style={[styles.prefLabel, active && styles.prefLabelActive]}>
-                      {pref.label}
+                      {t(`wizard.prefs.${pref.value}`)}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -400,7 +398,7 @@ export default function WizardScreen({ navigation }) {
             </View>
             {data.preferences.length > 0 && (
               <Text style={styles.prefsCount}>
-                {data.preferences.length} seleccionado{data.preferences.length > 1 ? 's' : ''}
+                {data.preferences.length} {t('wizard.selected')}
               </Text>
             )}
           </View>
@@ -417,7 +415,7 @@ export default function WizardScreen({ navigation }) {
           disabled={!canContinue()}
         >
           <Text style={styles.nextBtnText}>
-            {step === TOTAL_STEPS - 1 ? 'Ver mi paquete ✨' : 'Continuar'}
+            {step === TOTAL_STEPS - 1 ? t('wizard.see_package') : t('wizard.continue')}
           </Text>
           {step < TOTAL_STEPS - 1 && (
             <Ionicons name="arrow-forward" size={18} color={colors.primary} />

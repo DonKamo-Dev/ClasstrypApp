@@ -258,16 +258,16 @@ export default function PackageResultScreen({ route, navigation }) {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <View>
-          <Text style={styles.footerLabel}>Total del paquete</Text>
-          <Text style={styles.footerTotal}>${total.toLocaleString('es-CO')} COP</Text>
+        <View style={styles.footerLeft}>
+          <Text style={styles.footerLabel}>Package total</Text>
+          <Text style={styles.footerTotal} numberOfLines={1}>${total.toLocaleString('es-CO')} COP</Text>
         </View>
         <TouchableOpacity
           style={styles.reserveBtn}
           onPress={() => navigation.navigate('ClientTabs')}
         >
-          <Text style={styles.reserveBtnText}>Reservar paquete</Text>
-          <Ionicons name="arrow-forward" size={18} color={colors.primary} />
+          <Text style={styles.reserveBtnText}>Reserve package</Text>
+          <Ionicons name="arrow-forward" size={16} color={colors.primary} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -330,15 +330,17 @@ const styles = StyleSheet.create({
   financeTotalAmount: { fontSize: 18, fontWeight: '700', color: colors.secondary },
   footer: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    padding: spacing.lg, backgroundColor: colors.surface,
+    paddingHorizontal: spacing.lg, paddingVertical: 14,
+    backgroundColor: colors.surface,
     borderTopWidth: 1, borderTopColor: colors.border,
   },
+  footerLeft: { flex: 1, marginRight: spacing.md },
   footerLabel: { fontSize: 12, color: colors.textSecondary },
-  footerTotal: { fontSize: 20, fontWeight: '700', color: colors.textPrimary },
+  footerTotal: { fontSize: 18, fontWeight: '700', color: colors.textPrimary },
   reserveBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: colors.secondary, paddingHorizontal: 24,
-    paddingVertical: 14, borderRadius: 14,
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    backgroundColor: colors.secondary, paddingHorizontal: 20,
+    paddingVertical: 14, borderRadius: 14, flexShrink: 0,
   },
-  reserveBtnText: { fontSize: 15, fontWeight: '700', color: colors.primary },
+  reserveBtnText: { fontSize: 14, fontWeight: '700', color: colors.primary },
 });
