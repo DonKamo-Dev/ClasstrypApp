@@ -12,8 +12,8 @@ import RegisterClientScreen from '../screens/auth/RegisterClientScreen';
 import RegisterProviderScreen from '../screens/auth/RegisterProviderScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
-// App screens (placeholder por ahora)
-import HomeScreen from '../screens/HomeScreen';
+// App
+import ClientTabs from './ClientTabs';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +33,7 @@ function AuthStack() {
 function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="ClientTabs" component={ClientTabs} />
     </Stack.Navigator>
   );
 }
