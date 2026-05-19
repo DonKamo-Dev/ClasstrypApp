@@ -1,16 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
 const MENU_ITEMS = [
-  { emoji: '❤️', label: 'Mis favoritos',       soon: false },
-  { emoji: '💳', label: 'Métodos de pago',      soon: true },
-  { emoji: '📋', label: 'Historial de pagos',   soon: true },
-  { emoji: '💬', label: 'Mensajes',             soon: true },
-  { emoji: '⭐', label: 'Mis reseñas',          soon: true },
-  { emoji: '🔔', label: 'Notificaciones',       soon: true },
-  { emoji: '⚙️', label: 'Configuración',        soon: true },
+  { icon: 'heart-outline',       label: 'Mis favoritos',     soon: false },
+  { icon: 'card-outline',        label: 'Métodos de pago',   soon: true },
+  { icon: 'receipt-outline',     label: 'Historial de pagos',soon: true },
+  { icon: 'chatbubble-outline',  label: 'Mensajes',          soon: true },
+  { icon: 'star-outline',        label: 'Mis reseñas',       soon: true },
+  { icon: 'notifications-outline',label: 'Notificaciones',   soon: true },
+  { icon: 'settings-outline',    label: 'Configuración',     soon: true },
 ];
 
 export default function CuentaScreen() {
@@ -50,11 +51,11 @@ export default function CuentaScreen() {
               style={[styles.menuItem, i < MENU_ITEMS.length - 1 && styles.menuItemBorder]}
               disabled={item.soon}
             >
-              <Text style={styles.menuEmoji}>{item.emoji}</Text>
+              <Ionicons name={item.icon} size={22} color={item.soon ? colors.textSecondary : colors.textPrimary} />
               <Text style={[styles.menuLabel, item.soon && styles.menuLabelSoon]}>{item.label}</Text>
               {item.soon
                 ? <View style={styles.soonBadge}><Text style={styles.soonText}>Próximamente</Text></View>
-                : <Text style={styles.menuArrow}>›</Text>
+                : <Ionicons name="chevron-forward" size={18} color={colors.textSecondary} />
               }
             </TouchableOpacity>
           ))}
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg, paddingVertical: spacing.md, gap: spacing.md,
   },
   menuItemBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
-  menuEmoji: { fontSize: 20, width: 28 },
+  menuArrow: { fontSize: 20, color: colors.textSecondary },
   menuLabel: { flex: 1, fontSize: typography.base, color: colors.textPrimary },
   menuLabelSoon: { color: colors.textSecondary },
   menuArrow: { fontSize: 20, color: colors.textSecondary },

@@ -4,17 +4,18 @@ import {
   TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { ListingCard } from '../../components/ListingCard';
 import { supabase } from '../../lib/supabase';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
 const FILTERS = [
-  { value: null,          label: 'Todos',       emoji: '🗺️' },
-  { value: 'houses',      label: 'Casas',       emoji: '🏠' },
-  { value: 'boats',       label: 'Botes',       emoji: '🛥️' },
-  { value: 'transport',   label: 'Transporte',  emoji: '🚐' },
-  { value: 'experiences', label: 'Experiencias',emoji: '🤿' },
-  { value: 'extras',      label: 'Extras',      emoji: '✨' },
+  { value: null,          label: 'Todos',        icon: 'grid-outline',     iconActive: 'grid' },
+  { value: 'houses',      label: 'Casas',        icon: 'home-outline',     iconActive: 'home' },
+  { value: 'boats',       label: 'Botes',        icon: 'boat-outline',     iconActive: 'boat' },
+  { value: 'transport',   label: 'Transporte',   icon: 'car-outline',      iconActive: 'car' },
+  { value: 'experiences', label: 'Experiencias', icon: 'compass-outline',  iconActive: 'compass' },
+  { value: 'extras',      label: 'Extras',       icon: 'sparkles-outline', iconActive: 'sparkles' },
 ];
 
 export default function ExplorarScreen({ navigation }) {
@@ -53,15 +54,12 @@ export default function ExplorarScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
+      {/* Header + Buscador + Filtros — todo en un bloque sin divisores */}
+      <View style={styles.topBlock}>
         <Text style={styles.headerTitle}>Explorar</Text>
-      </View>
 
-      {/* Buscador */}
-      <View style={styles.searchRow}>
         <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search-outline" size={18} color={colors.textSecondary} />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar casas, botes, experiencias..."
@@ -72,32 +70,38 @@ export default function ExplorarScreen({ navigation }) {
           />
           {search.length > 0 && (
             <TouchableOpacity onPress={() => setSearch('')}>
-              <Text style={styles.clearIcon}>✕</Text>
+              <Ionicons name="close-circle" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           )}
         </View>
-      </View>
 
-      {/* Filtros por categoría */}
-      <FlatList
-        horizontal
-        data={FILTERS}
-        keyExtractor={item => item.value ?? 'all'}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filtersRow}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.filterChip, category === item.value && styles.filterChipActive]}
-            onPress={() => setCategory(item.value)}
-          >
-            <Text style={styles.filterEmoji}>{item.emoji}</Text>
-            <Text style={[styles.filterLabel, category === item.value && styles.filterLabelActive]}>
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        )}
-        style={styles.filtersList}
-      />
+        {/* Filtros */}
+        <FlatList
+          horizontal
+          data={FILTERS}
+          keyExtractor={item => item.value ?? 'all'}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filtersRow}
+          renderItem={({ item }) => {
+            const active = category === item.value;
+            return (
+              <TouchableOpacity
+                style={[styles.filterChip, active && styles.filterChipActive]}
+                onPress={() => setCategory(item.value)}
+              >
+                <Ionicons
+                  name={active ? item.iconActive : item.icon}
+                  size={16}
+                  color={active ? '#FFFFFF' : colors.textSecondary}
+                />
+                <Text style={[styles.filterLabel, active && styles.filterLabelActive]}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
 
       {/* Resultados */}
       {loading ? (
@@ -115,7 +119,7 @@ export default function ExplorarScreen({ navigation }) {
           }
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Text style={styles.emptyEmoji}>🏖️</Text>
+              <Ionicons name="search-outline" size={52} color={colors.border} />
               <Text style={styles.emptyTitle}>Sin resultados</Text>
               <Text style={styles.emptySubtitle}>
                 {search ? `No encontramos "${search}"` : 'No hay servicios en esta categoría'}
@@ -137,39 +141,47 @@ export default function ExplorarScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    paddingHorizontal: spacing.lg, paddingVertical: spacing.md,
+  topBlock: {
     backgroundColor: colors.surface,
-    borderBottomWidth: 1, borderBottomColor: colors.border,
+    paddingTop: spacing.md,
+    paddingBottom: 16,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  headerTitle: { fontSize: typography.xl, fontWeight: typography.bold, color: colors.textPrimary },
-  searchRow: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, backgroundColor: colors.surface },
+  headerTitle: {
+    fontSize: typography.xl, fontWeight: typography.bold,
+    color: colors.textPrimary, paddingHorizontal: spacing.lg, marginBottom: spacing.md,
+  },
   searchBox: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: colors.background,
-    borderRadius: borderRadius.md, paddingHorizontal: spacing.md,
-    borderWidth: 1, borderColor: colors.border, height: 48, gap: spacing.sm,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1, borderColor: colors.border,
+    height: 48, gap: spacing.sm,
+    marginHorizontal: spacing.lg, marginBottom: 16,
   },
-  searchIcon: { fontSize: 16 },
   searchInput: { flex: 1, fontSize: typography.base, color: colors.textPrimary },
-  clearIcon: { fontSize: 14, color: colors.textSecondary, padding: 4 },
-  filtersList: { backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border },
-  filtersRow: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, gap: spacing.sm },
+  filtersRow: { paddingHorizontal: spacing.lg, gap: 10 },
   filterChip: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    paddingHorizontal: spacing.md, paddingVertical: spacing.xs,
+    flexDirection: 'row', alignItems: 'center', gap: 7,
+    paddingHorizontal: 16, paddingVertical: 10,
     borderRadius: borderRadius.full, borderWidth: 1.5,
     borderColor: colors.border, backgroundColor: colors.surface,
+    minHeight: 42,
   },
   filterChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  filterEmoji: { fontSize: 14 },
-  filterLabel: { fontSize: 13, fontWeight: typography.medium, color: colors.textSecondary },
+  filterLabel: { fontSize: 14, fontWeight: typography.medium, color: colors.textSecondary },
   filterLabelActive: { color: '#FFFFFF', fontWeight: typography.semibold },
   listContent: { padding: spacing.lg, gap: spacing.md },
   resultsCount: { fontSize: 13, color: colors.textSecondary, marginBottom: spacing.sm },
   card: {},
   empty: { alignItems: 'center', paddingVertical: 60, gap: spacing.sm },
-  emptyEmoji: { fontSize: 52 },
   emptyTitle: { fontSize: typography.lg, fontWeight: typography.bold, color: colors.textPrimary },
   emptySubtitle: { fontSize: typography.base, color: colors.textSecondary, textAlign: 'center' },
 });

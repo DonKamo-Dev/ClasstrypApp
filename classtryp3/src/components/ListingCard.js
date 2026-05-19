@@ -1,4 +1,5 @@
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors, borderRadius, spacing, typography } from '../theme';
 
 const CATEGORY_LABELS = {
@@ -9,8 +10,12 @@ const CATEGORY_LABELS = {
   extras: 'Servicio Extra',
 };
 
-const CATEGORY_EMOJIS = {
-  houses: '🏠', boats: '🛥️', transport: '🚐', experiences: '🤿', extras: '✨',
+const CATEGORY_ICONS = {
+  houses: 'home-outline',
+  boats: 'boat-outline',
+  transport: 'car-outline',
+  experiences: 'compass-outline',
+  extras: 'sparkles-outline',
 };
 
 const PRICE_UNITS = {
@@ -29,11 +34,12 @@ export function ListingCard({ listing, onPress, style }) {
         {photo
           ? <Image source={{ uri: photo }} style={styles.image} resizeMode="cover" />
           : <View style={[styles.image, styles.imagePlaceholder]}>
-              <Text style={styles.placeholderEmoji}>{CATEGORY_EMOJIS[listing.category]}</Text>
+              <Ionicons name={CATEGORY_ICONS[listing.category]} size={40} color="#9CA3AF" />
             </View>
         }
         <View style={styles.categoryBadge}>
-          <Text style={styles.categoryBadgeText}>{CATEGORY_EMOJIS[listing.category]} {CATEGORY_LABELS[listing.category]}</Text>
+          <Ionicons name={CATEGORY_ICONS[listing.category]} size={12} color="#FFFFFF" />
+          <Text style={styles.categoryBadgeText}>{CATEGORY_LABELS[listing.category]}</Text>
         </View>
       </View>
 
@@ -75,12 +81,15 @@ export function ListingCardHorizontal({ listing, onPress }) {
         {photo
           ? <Image source={{ uri: photo }} style={styles.imageH} resizeMode="cover" />
           : <View style={[styles.imageH, styles.imagePlaceholder]}>
-              <Text style={styles.placeholderEmoji}>{CATEGORY_EMOJIS[listing.category]}</Text>
+              <Ionicons name={CATEGORY_ICONS[listing.category]} size={32} color="#9CA3AF" />
             </View>
         }
       </View>
       <View style={styles.infoH}>
-        <Text style={styles.categorySmall}>{CATEGORY_EMOJIS[listing.category]} {CATEGORY_LABELS[listing.category]}</Text>
+        <View style={styles.categoryRowH}>
+          <Ionicons name={CATEGORY_ICONS[listing.category]} size={12} color={colors.textSecondary} />
+          <Text style={styles.categorySmall}>{CATEGORY_LABELS[listing.category]}</Text>
+        </View>
         <Text style={styles.titleH} numberOfLines={2}>{listing.title}</Text>
         <Text style={styles.priceH}>${price} COP{'\n'}<Text style={styles.priceUnitH}>{unit}</Text></Text>
         {listing.rating > 0 && <Text style={styles.ratingH}>⭐ {listing.rating}</Text>}
@@ -106,8 +115,9 @@ const styles = StyleSheet.create({
   placeholderEmoji: { fontSize: 40 },
   categoryBadge: {
     position: 'absolute', top: 10, left: 10,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: 'rgba(26,26,46,0.85)',
-    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20,
+    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20,
   },
   categoryBadgeText: { color: '#FFFFFF', fontSize: 11, fontWeight: '600' },
   info: { padding: spacing.md, gap: 6 },
@@ -133,6 +143,7 @@ const styles = StyleSheet.create({
   imageBoxH: { width: '100%', height: 130 },
   imageH: { width: '100%', height: '100%' },
   infoH: { padding: spacing.sm, gap: 4 },
+  categoryRowH: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   categorySmall: { fontSize: 10, color: colors.textSecondary },
   titleH: { fontSize: 13, fontWeight: typography.semibold, color: colors.textPrimary, lineHeight: 18 },
   priceH: { fontSize: 13, fontWeight: typography.bold, color: colors.textPrimary, marginTop: 4 },

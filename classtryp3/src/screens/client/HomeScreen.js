@@ -7,15 +7,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ListingCardHorizontal, ListingCard } from '../../components/ListingCard';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
 const CATEGORIES = [
-  { value: null,          label: 'Todo',        emoji: '✨' },
-  { value: 'houses',      label: 'Casas',       emoji: '🏠' },
-  { value: 'boats',       label: 'Botes',       emoji: '🛥️' },
-  { value: 'transport',   label: 'Transporte',  emoji: '🚐' },
-  { value: 'experiences', label: 'Experiencias',emoji: '🤿' },
-  { value: 'extras',      label: 'Extras',      emoji: '⭐' },
+  { value: null,          label: 'Todo',         icon: 'grid-outline',     iconActive: 'grid' },
+  { value: 'houses',      label: 'Casas',        icon: 'home-outline',     iconActive: 'home' },
+  { value: 'boats',       label: 'Botes',        icon: 'boat-outline',     iconActive: 'boat' },
+  { value: 'transport',   label: 'Transporte',   icon: 'car-outline',      iconActive: 'car' },
+  { value: 'experiences', label: 'Experiencias', icon: 'compass-outline',  iconActive: 'compass' },
+  { value: 'extras',      label: 'Extras',       icon: 'sparkles-outline', iconActive: 'sparkles' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -66,7 +67,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.headerGreeting}>Hola, {firstName} 👋</Text>
         </View>
         <TouchableOpacity style={styles.notifBtn} onPress={() => navigation.navigate('Notifications')}>
-          <Text style={styles.notifIcon}>🔔</Text>
+          <Ionicons name="notifications-outline" size={22} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -90,18 +91,25 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Explorar por categoría</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesRow}>
-            {CATEGORIES.map((cat) => (
-              <TouchableOpacity
-                key={cat.value ?? 'all'}
-                style={[styles.categoryChip, activeCategory === cat.value && styles.categoryChipActive]}
-                onPress={() => setActiveCategory(cat.value)}
-              >
-                <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
-                <Text style={[styles.categoryLabel, activeCategory === cat.value && styles.categoryLabelActive]}>
-                  {cat.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const active = activeCategory === cat.value;
+              return (
+                <TouchableOpacity
+                  key={cat.value ?? 'all'}
+                  style={[styles.categoryChip, active && styles.categoryChipActive]}
+                  onPress={() => setActiveCategory(cat.value)}
+                >
+                  <Ionicons
+                    name={active ? cat.iconActive : cat.icon}
+                    size={16}
+                    color={active ? '#FFFFFF' : colors.textSecondary}
+                  />
+                  <Text style={[styles.categoryLabel, active && styles.categoryLabelActive]}>
+                    {cat.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -200,14 +208,13 @@ const styles = StyleSheet.create({
   countText: { fontSize: 13, color: colors.textSecondary },
   categoriesRow: { paddingHorizontal: spacing.lg, gap: spacing.sm },
   categoryChip: {
-    alignItems: 'center', gap: 4,
-    backgroundColor: colors.surface, paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full, borderWidth: 1, borderColor: colors.border,
-    flexDirection: 'row',
+    flexDirection: 'row', alignItems: 'center', gap: 7,
+    backgroundColor: colors.surface, paddingHorizontal: 16, paddingVertical: 10,
+    borderRadius: borderRadius.full, borderWidth: 1.5, borderColor: colors.border,
+    minHeight: 42,
   },
   categoryChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  categoryEmoji: { fontSize: 16 },
-  categoryLabel: { fontSize: 13, fontWeight: typography.medium, color: colors.textSecondary },
+  categoryLabel: { fontSize: 14, fontWeight: typography.medium, color: colors.textSecondary },
   categoryLabelActive: { color: '#FFFFFF', fontWeight: typography.semibold },
   featuredRow: { paddingHorizontal: spacing.lg, gap: spacing.md },
   grid: { paddingHorizontal: spacing.lg, gap: spacing.md },

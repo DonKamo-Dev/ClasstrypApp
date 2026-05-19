@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from 'react-native';
 import HomeScreen from '../screens/client/HomeScreen';
 import ExplorarScreen from '../screens/client/ExplorarScreen';
@@ -7,15 +8,28 @@ import { colors, typography } from '../theme';
 
 const Tab = createBottomTabNavigator();
 
-function TabIcon({ emoji, label, focused }) {
+const TAB_ICONS = {
+  Descubrir: { outline: 'home-outline',     filled: 'home' },
+  Explorar:  { outline: 'search-outline',   filled: 'search' },
+  Paquetes:  { outline: 'airplane-outline', filled: 'airplane' },
+  Reservas:  { outline: 'calendar-outline', filled: 'calendar' },
+  Cuenta:    { outline: 'person-outline',   filled: 'person' },
+};
+
+function TabIcon({ name, focused }) {
+  const icon = TAB_ICONS[name];
   return (
-    <View style={{ alignItems: 'center', gap: 2 }}>
-      <Text style={{ fontSize: 22 }}>{emoji}</Text>
+    <View style={{ alignItems: 'center', gap: 3 }}>
+      <Ionicons
+        name={focused ? icon.filled : icon.outline}
+        size={24}
+        color={focused ? colors.secondary : '#9CA3AF'}
+      />
       <Text style={{
         fontSize: 10,
         fontWeight: focused ? typography.semibold : typography.regular,
         color: focused ? colors.secondary : '#9CA3AF',
-      }}>{label}</Text>
+      }}>{name}</Text>
     </View>
   );
 }
@@ -23,7 +37,7 @@ function TabIcon({ emoji, label, focused }) {
 function PlaceholderScreen({ title }) {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 40, marginBottom: 12 }}>🚧</Text>
+      <Ionicons name="construct-outline" size={48} color={colors.textSecondary} style={{ marginBottom: 12 }} />
       <Text style={{ fontSize: 18, fontWeight: '700', color: colors.textPrimary }}>{title}</Text>
       <Text style={{ fontSize: 14, color: colors.textSecondary, marginTop: 8 }}>Próximamente</Text>
     </View>
@@ -40,36 +54,36 @@ export default function ClientTabs() {
           backgroundColor: colors.surface,
           borderTopWidth: 1,
           borderTopColor: colors.border,
-          height: 72,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 80,
+          paddingBottom: 12,
+          paddingTop: 10,
         },
       }}
     >
       <Tab.Screen
         name="Descubrir"
         component={HomeScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" label="Descubrir" focused={focused} /> }}
+        options={{ tabBarIcon: ({ focused }) => <TabIcon name="Descubrir" focused={focused} /> }}
       />
       <Tab.Screen
         name="Explorar"
         component={ExplorarScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🔍" label="Explorar" focused={focused} /> }}
+        options={{ tabBarIcon: ({ focused }) => <TabIcon name="Explorar" focused={focused} /> }}
       />
       <Tab.Screen
         name="Paquetes"
         component={() => <PlaceholderScreen title="Mis Paquetes" />}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="✈️" label="Paquetes" focused={focused} /> }}
+        options={{ tabBarIcon: ({ focused }) => <TabIcon name="Paquetes" focused={focused} /> }}
       />
       <Tab.Screen
         name="Reservas"
         component={() => <PlaceholderScreen title="Mis Reservas" />}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📋" label="Reservas" focused={focused} /> }}
+        options={{ tabBarIcon: ({ focused }) => <TabIcon name="Reservas" focused={focused} /> }}
       />
       <Tab.Screen
         name="Cuenta"
         component={CuentaScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="👤" label="Cuenta" focused={focused} /> }}
+        options={{ tabBarIcon: ({ focused }) => <TabIcon name="Cuenta" focused={focused} /> }}
       />
     </Tab.Navigator>
   );
