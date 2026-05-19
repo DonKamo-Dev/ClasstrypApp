@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme';
 
 // Auth screens
-import SplashScreen from '../screens/auth/SplashScreen';
 import OnboardingScreen from '../screens/auth/OnboardingScreen';
 import UserTypeScreen from '../screens/auth/UserTypeScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
