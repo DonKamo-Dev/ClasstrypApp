@@ -49,10 +49,16 @@ export function ListingCard({ listing, onPress, style }) {
 
         <View style={styles.metaRow}>
           {listing.location_name && (
-            <Text style={styles.location} numberOfLines={1}>📍 {listing.location_name}</Text>
+            <View style={styles.metaItem}>
+              <Ionicons name="location-outline" size={12} color={colors.textSecondary} />
+              <Text style={styles.location} numberOfLines={1}>{listing.location_name}</Text>
+            </View>
           )}
           {listing.rating > 0 && (
-            <Text style={styles.rating}>⭐ {listing.rating} ({listing.total_reviews})</Text>
+            <View style={styles.metaItem}>
+              <Ionicons name="star" size={12} color="#F59E0B" />
+              <Text style={styles.rating}>{listing.rating} ({listing.total_reviews})</Text>
+            </View>
           )}
         </View>
 
@@ -62,7 +68,8 @@ export function ListingCard({ listing, onPress, style }) {
             <Text style={styles.priceUnit}> {unit}</Text>
           </Text>
           <View style={styles.capacityBadge}>
-            <Text style={styles.capacityText}>👥 hasta {listing.capacity_max}</Text>
+            <Ionicons name="people-outline" size={13} color={colors.textSecondary} />
+            <Text style={styles.capacityText}>hasta {listing.capacity_max}</Text>
           </View>
         </View>
       </View>
@@ -92,7 +99,12 @@ export function ListingCardHorizontal({ listing, onPress }) {
         </View>
         <Text style={styles.titleH} numberOfLines={2}>{listing.title}</Text>
         <Text style={styles.priceH}>${price} COP{'\n'}<Text style={styles.priceUnitH}>{unit}</Text></Text>
-        {listing.rating > 0 && <Text style={styles.ratingH}>⭐ {listing.rating}</Text>}
+        {listing.rating > 0 && (
+          <View style={styles.ratingRowH}>
+            <Ionicons name="star" size={11} color="#F59E0B" />
+            <Text style={styles.ratingH}>{listing.rating}</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -122,7 +134,8 @@ const styles = StyleSheet.create({
   categoryBadgeText: { color: '#FFFFFF', fontSize: 11, fontWeight: '600' },
   info: { padding: spacing.md, gap: 6 },
   title: { fontSize: typography.base, fontWeight: typography.semibold, color: colors.textPrimary },
-  metaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  metaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 },
+  metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4, flex: 1 },
   location: { fontSize: 12, color: colors.textSecondary, flex: 1 },
   rating: { fontSize: 12, color: colors.textSecondary },
   footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
@@ -130,7 +143,8 @@ const styles = StyleSheet.create({
   priceAmount: { fontSize: typography.base, fontWeight: typography.bold, color: colors.textPrimary },
   priceUnit: { fontSize: 11, color: colors.textSecondary },
   capacityBadge: {
-    backgroundColor: '#F3F4F6', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10,
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: '#F3F4F6', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10,
   },
   capacityText: { fontSize: 11, color: colors.textSecondary },
 
@@ -148,5 +162,6 @@ const styles = StyleSheet.create({
   titleH: { fontSize: 13, fontWeight: typography.semibold, color: colors.textPrimary, lineHeight: 18 },
   priceH: { fontSize: 13, fontWeight: typography.bold, color: colors.textPrimary, marginTop: 4 },
   priceUnitH: { fontSize: 11, fontWeight: '400', color: colors.textSecondary },
+  ratingRowH: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   ratingH: { fontSize: 11, color: colors.textSecondary },
 });
