@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import HomeScreen from '../screens/client/HomeScreen';
 import ExplorarScreen from '../screens/client/ExplorarScreen';
 import CuentaScreen from '../screens/client/CuentaScreen';
@@ -72,7 +72,23 @@ export default function ClientTabs() {
       />
       <Tab.Screen
         name="Paquetes"
-        component={() => <PlaceholderScreen title="Mis Paquetes" />}
+        component={({ navigation }) => (
+          <View style={{ flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: 32, gap: 16 }}>
+            <Ionicons name="airplane-outline" size={64} color={colors.secondary} />
+            <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }}>
+              Armá tu paquete
+            </Text>
+            <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', lineHeight: 22 }}>
+              Casa, bote, transporte y experiencias — todo en un solo pago.
+            </Text>
+            <TouchableOpacity
+              style={{ backgroundColor: colors.secondary, paddingHorizontal: 32, paddingVertical: 16, borderRadius: 14, marginTop: 8 }}
+              onPress={() => navigation.navigate('Wizard')}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '700', color: colors.primary }}>Armar paquete ✨</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         options={{ tabBarIcon: ({ focused }) => <TabIcon name="Paquetes" focused={focused} /> }}
       />
       <Tab.Screen

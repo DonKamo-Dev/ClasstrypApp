@@ -15,6 +15,8 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 // App
 import ClientTabs from './ClientTabs';
 import ListingDetailScreen from '../screens/client/ListingDetailScreen';
+import WizardScreen from '../screens/client/WizardScreen';
+import PackageResultScreen from '../screens/client/PackageResultScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +41,16 @@ function AppStack() {
         name="ListingDetail"
         component={ListingDetailScreen}
         options={{ animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name="Wizard"
+        component={WizardScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="PackageResult"
+        component={PackageResultScreen}
+        options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>
   );

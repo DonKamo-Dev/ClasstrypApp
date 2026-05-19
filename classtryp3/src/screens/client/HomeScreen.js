@@ -76,7 +76,7 @@ export default function HomeScreen({ navigation }) {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchData(); }} tintColor={colors.secondary} />}
       >
         {/* Hero CTA */}
-        <TouchableOpacity style={styles.heroBanner} onPress={() => navigation.navigate('Paquetes')} activeOpacity={0.9}>
+        <TouchableOpacity style={styles.heroBanner} onPress={() => navigation.navigate('Wizard')} activeOpacity={0.9}>
           <Text style={styles.heroEmoji}>✈️</Text>
           <View style={styles.heroText}>
             <Text style={styles.heroTitle}>¿A dónde vamos?</Text>
