@@ -4,7 +4,7 @@ import WizardScreen from './src/screens/WizardScreen';
 import SupabaseTestScreen from './src/screens/SupabaseTestScreen';
 
 // Cambiar a false cuando ya no necesites el test de conexión
-const SHOW_SUPABASE_TEST = true;
+const SHOW_SUPABASE_TEST = false;
 
 export default function App() {
   const [screen, setScreen] = useState('welcome');
